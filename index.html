@@ -182,6 +182,14 @@ section{padding-block:96px 0}
 .phone::before{content:"";position:absolute;top:18px;left:50%;transform:translateX(-50%);width:70px;height:18px;border-radius:99px;background:var(--plum);z-index:1}
 .snd{position:absolute;z-index:2;right:22px;bottom:22px;border:0;cursor:pointer;background:#ffffffe6;color:var(--berry);font:800 12px var(--f-body);padding:8px 14px;border-radius:99px}
 .snd:focus-visible{outline:3px solid var(--rose);outline-offset:2px}
+.music{position:fixed;z-index:60;left:18px;bottom:18px;display:flex;align-items:center;gap:9px;border:0;cursor:pointer;background:#ffffffeb;color:var(--berry);font:800 13px var(--f-body);padding:10px 16px 10px 12px;border-radius:99px;box-shadow:0 14px 30px -14px #C2517E99;backdrop-filter:blur(8px);transition:transform .5s var(--ease)}
+.music:hover{transform:translateY(-2px)}
+.music:focus-visible{outline:3px solid var(--rose);outline-offset:2px}
+.music .eq{display:flex;align-items:flex-end;gap:2px;height:14px}
+.music .eq i{width:3px;height:4px;border-radius:2px;background:var(--rose);transition:height .3s}
+.music.on .eq i{animation:eq 1s ease-in-out infinite;background:var(--berry)}
+.music.on .eq i:nth-child(2){animation-delay:-.35s}.music.on .eq i:nth-child(3){animation-delay:-.7s}
+@keyframes eq{0%,100%{height:4px}50%{height:14px}}
 .bts .txt p{margin:0 0 14px;max-width:32em}
 .steps{display:grid;gap:12px;margin-top:20px}
 .steps div{display:flex;gap:14px;align-items:flex-start;background:var(--card);border-radius:20px;padding:14px 18px;transition:transform .5s var(--ease)}
@@ -226,6 +234,8 @@ footer{text-align:center;color:var(--mist);font-size:14px;padding-bottom:40px}
 <div id="bar" aria-hidden="true"></div>
 
 <div class="wrap">
+  <audio id="bgm" src="media/bgm.mp3" loop preload="none"></audio>
+  <button class="music" id="musicBtn" type="button" aria-pressed="false" aria-label="Nhạc nền"><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span><span>Bật nhạc</span></button>
   <nav class="in">
     <div class="logo">Thu Thảo</div>
     <ul>
@@ -443,7 +453,17 @@ if('IntersectionObserver' in window){
   var vo=new IntersectionObserver(function(es){es.forEach(function(e){var v=e.target;if(e.isIntersecting&&!reduce){var p=v.play();p&&p.catch(function(){})}else v.pause()})},{threshold:.35});
   vo.observe(heroV);vo.observe(btsV);
 }
-document.getElementById('snd').addEventListener('click',function(){btsV.muted=!btsV.muted;this.textContent=btsV.muted?'Bật tiếng':'Tắt tiếng';var p=btsV.play();p&&p.catch(function(){})});
+/* background music: browsers block sound until the visitor interacts, so it starts softly on the first tap/scroll-click; the button toggles it and the choice is remembered */
+var bgm=document.getElementById('bgm'),mb=document.getElementById('musicBtn'),mOn=false,fadeT;
+function mPref(v){try{if(v===undefined)return localStorage.getItem('thao-music');localStorage.setItem('thao-music',v)}catch(e){}}
+function fadeTo(target,done){clearInterval(fadeT);fadeT=setInterval(function(){var d=target-bgm.volume;if(Math.abs(d)<.02){bgm.volume=target;clearInterval(fadeT);done&&done()}else bgm.volume+=d>0?.02:-.02},40)}
+function musicOn(){if(mOn)return;bgm.volume=0;var p=bgm.play();mOn=true;mb.classList.add('on');mb.setAttribute('aria-pressed','true');mb.lastChild.textContent='Tắt nhạc';fadeTo(.32);p&&p.catch(function(){musicOff(true)})}
+function musicOff(quiet){mOn=false;mb.classList.remove('on');mb.setAttribute('aria-pressed','false');mb.lastChild.textContent='Bật nhạc';fadeTo(0,function(){bgm.pause()})}
+mb.addEventListener('click',function(e){e.stopPropagation();if(mOn){musicOff();mPref('off')}else{musicOn();mPref('on')}});
+function firstTouch(){removeEventListener('pointerdown',firstTouch);removeEventListener('keydown',firstTouch);if(mPref()!=='off')musicOn()}
+addEventListener('pointerdown',firstTouch);addEventListener('keydown',firstTouch);
+document.addEventListener('visibilitychange',function(){if(!mOn)return;if(document.hidden)bgm.pause();else{var p=bgm.play();p&&p.catch(function(){})}});
+document.getElementById('snd').addEventListener('click',function(){btsV.muted=!btsV.muted;this.textContent=btsV.muted?'Bật tiếng':'Tắt tiếng';var p=btsV.play();p&&p.catch(function(){});if(!btsV.muted&&mOn)musicOff()});
 
 var bar=document.getElementById('bar'),navs=[].slice.call(document.querySelectorAll('nav a'));
 function onScroll(){
