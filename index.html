@@ -460,7 +460,7 @@ function fadeTo(target,done){clearInterval(fadeT);fadeT=setInterval(function(){v
 function musicOn(){if(mOn)return;bgm.volume=0;var p=bgm.play();mOn=true;mb.classList.add('on');mb.setAttribute('aria-pressed','true');mb.lastChild.textContent='Tắt nhạc';fadeTo(.32);p&&p.catch(function(){musicOff(true)})}
 function musicOff(quiet){mOn=false;mb.classList.remove('on');mb.setAttribute('aria-pressed','false');mb.lastChild.textContent='Bật nhạc';fadeTo(0,function(){bgm.pause()})}
 mb.addEventListener('click',function(e){e.stopPropagation();if(mOn){musicOff();mPref('off')}else{musicOn();mPref('on')}});
-function firstTouch(){removeEventListener('pointerdown',firstTouch);removeEventListener('keydown',firstTouch);if(mPref()!=='off')musicOn()}
+function firstTouch(e){removeEventListener('pointerdown',firstTouch);removeEventListener('keydown',firstTouch);if(mb.contains(e.target))return;if(mPref()!=='off')musicOn()}
 addEventListener('pointerdown',firstTouch);addEventListener('keydown',firstTouch);
 document.addEventListener('visibilitychange',function(){if(!mOn)return;if(document.hidden)bgm.pause();else{var p=bgm.play();p&&p.catch(function(){})}});
 document.getElementById('snd').addEventListener('click',function(){btsV.muted=!btsV.muted;this.textContent=btsV.muted?'Bật tiếng':'Tắt tiếng';var p=btsV.play();p&&p.catch(function(){});if(!btsV.muted&&mOn)musicOff()});
