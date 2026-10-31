@@ -1,0 +1,473 @@
+<title>Thu Thảo Portfolio</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,100;1,9..144,300..700,100&family=Nunito:wght@400;600;700;800&family=Dancing+Script:wght@500;600;700&display=swap">
+<style>
+/* Layout: soft long-scroll. Arch video hero, count-up stats, channel cards (avatar + 3 numbers + thumbs),
+   filterable thumbnail video wall, fanpage covers, GSM class, behind-the-scenes video, contact. */
+:root{
+  --blush:#FFF4F7;--petal:#FFDCE7;--rose:#F7A8C4;--berry:#C2517E;--plum:#4A2B3A;--mist:#8A6575;--card:#FFFFFF;
+  --f-display:'Fraunces','Georgia',serif;--f-body:'Nunito','Segoe UI',system-ui,sans-serif;--f-hand:'Dancing Script','Segoe Print',cursive;
+  --ease:cubic-bezier(.22,1,.36,1);
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--blush);color:var(--plum);font-family:var(--f-body);font-size:17px;line-height:1.6;overflow-x:hidden;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1180px;margin:0 auto;position:relative;z-index:1}
+h1,h2,h3,h4{font-family:var(--f-display);font-variation-settings:"SOFT" 100;font-weight:500;margin:0;text-wrap:balance;line-height:1.08}
+em{font-style:italic;color:var(--berry)}
+a{color:inherit}
+.eyebrow{font-size:13px;letter-spacing:.22em;text-transform:uppercase;font-weight:800;color:var(--berry)}
+.hand{font-family:var(--f-hand);font-size:26px;color:var(--berry);line-height:1}
+
+.blobs{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
+.blobs i{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55;animation:drift 22s ease-in-out infinite alternate}
+.blobs i:nth-child(1){width:42vw;height:42vw;background:#FFC9DC;top:-12vw;right:-10vw}
+.blobs i:nth-child(2){width:34vw;height:34vw;background:#FFE3EC;top:40vh;left:-14vw;animation-duration:28s}
+.blobs i:nth-child(3){width:26vw;height:26vw;background:#FFD6C9;bottom:-8vw;right:20vw;animation-duration:32s;opacity:.35}
+@keyframes drift{to{transform:translate(4vw,6vh) scale(1.08)}}
+#bar{position:fixed;top:0;left:0;height:4px;width:100%;background:linear-gradient(90deg,var(--rose),var(--berry));transform-origin:0 50%;transform:scaleX(0);z-index:60;border-radius:0 4px 4px 0}
+
+nav{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:22px;flex-wrap:wrap}
+nav .logo{font-family:var(--f-display);font-style:italic;font-size:24px;font-variation-settings:"SOFT" 100}
+nav ul{display:flex;gap:6px;list-style:none;margin:0;padding:0;flex-wrap:wrap}
+nav a{display:block;text-decoration:none;font-weight:700;font-size:14px;padding:8px 16px;border-radius:99px;transition:background .4s var(--ease),color .4s var(--ease)}
+nav a:hover,nav a:focus-visible,nav a.on{background:var(--petal);color:var(--berry);outline:none}
+
+.in{animation:rise 1.1s var(--ease) both;animation-delay:calc(var(--d,0) * 90ms + 120ms)}
+@keyframes rise{from{opacity:0;transform:translateY(22px);filter:blur(6px)}}
+.rv{transition:opacity 1s var(--ease),transform 1s var(--ease),filter 1s var(--ease);transition-delay:calc(var(--d,0) * 70ms)}
+.rv.wait{opacity:0;transform:translateY(30px) scale(.985);filter:blur(5px)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center;padding-block:30px 72px}
+.hero h1{font-size:clamp(52px,8.4vw,112px);margin:16px 0 22px;letter-spacing:-.02em}
+.hero h1 em{display:block;font-weight:400}
+.hero p.lead{font-size:clamp(18px,2vw,21px);max-width:30em;color:var(--mist);margin:0 0 26px}
+.kpi-h{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:30px}
+.kpi-h div{background:var(--card);border-radius:20px;padding:12px 18px;box-shadow:0 14px 30px -20px #C2517E}
+.kpi-h b{display:block;font-family:var(--f-display);font-size:30px;font-weight:600;color:var(--berry);line-height:1.05;font-variation-settings:"SOFT" 100}
+.kpi-h span{font-size:13px;font-weight:700;color:var(--mist)}
+.btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:8px;border:0;cursor:pointer;font:800 15px var(--f-body);padding:14px 26px;border-radius:99px;text-decoration:none;transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
+.btn.main{background:var(--rose);color:#fff;box-shadow:0 10px 26px -10px #E0709B}
+.btn.ghost{background:var(--card);color:var(--berry);box-shadow:inset 0 0 0 2px var(--petal)}
+.btn:hover{transform:translateY(-3px);box-shadow:0 16px 30px -12px #E0709B}
+.btn:focus-visible{outline:3px solid var(--berry);outline-offset:3px}
+.portrait{position:relative;justify-self:center;width:min(100%,400px)}
+.portrait .arch{aspect-ratio:4/5;border-radius:999px 999px 36px 36px;overflow:hidden;background:var(--petal);box-shadow:0 30px 60px -28px #D6769F;position:relative;z-index:1}
+.portrait .arch video,.portrait .arch img{width:100%;height:100%;object-fit:cover;display:block}
+.portrait::before{content:"";position:absolute;inset:-14px -14px 14px 14px;border-radius:999px 999px 40px 40px;background:var(--rose);opacity:.55;z-index:0;animation:breathe 7s ease-in-out infinite}
+@keyframes breathe{50%{transform:translate(-5px,5px)}}
+.sticker{position:absolute;z-index:2;background:var(--card);border-radius:20px;padding:10px 16px;box-shadow:0 14px 30px -14px #C2517E88;font-weight:800;font-size:14px;line-height:1.3}
+.sticker b{display:block;font-family:var(--f-display);font-size:28px;font-weight:600;color:var(--berry);font-variation-settings:"SOFT" 100}
+.sticker.a{left:-30px;top:16%;animation:float 6s ease-in-out infinite}
+.sticker.b{right:-20px;bottom:10%;animation:float 7s ease-in-out -2s infinite}
+@keyframes float{50%{transform:translateY(-9px) rotate(-1deg)}}
+.flower{position:absolute;z-index:2;right:16px;top:-6px;font-size:34px;color:var(--berry);animation:spin 14s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.rec{position:absolute;z-index:2;left:50%;bottom:16px;transform:translateX(-50%);background:#ffffffd9;border-radius:99px;padding:6px 14px;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;display:flex;gap:8px;align-items:center;white-space:nowrap}
+.rec i{width:8px;height:8px;border-radius:50%;background:#E5486F;animation:blink 1.6s ease-in-out infinite}
+@keyframes blink{50%{opacity:.25}}
+
+.band{background:var(--rose);color:#fff;border-radius:99px;padding:14px 0;overflow:hidden;white-space:nowrap}
+.band div{display:inline-block;animation:slide 40s linear infinite;font-family:var(--f-display);font-style:italic;font-size:22px;font-variation-settings:"SOFT" 100}
+.band:hover div{animation-play-state:paused}
+.band span{margin:0 22px}
+@keyframes slide{to{transform:translateX(-50%)}}
+
+section{padding-block:96px 0}
+.head{max-width:720px;margin-bottom:40px}
+.head .hand,.gsm .hand,.contact .hand{font-family:var(--f-hand);font-weight:600;font-size:clamp(40px,5.4vw,64px);line-height:1.05;color:var(--berry);font-variation-settings:normal}
+.when-s{font-weight:800;font-size:14px;color:var(--mist);margin-top:6px}
+.head p{color:var(--mist);margin:14px 0 0;max-width:36em}
+
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+.stat{background:var(--card);border-radius:30px;padding:28px 24px;box-shadow:0 18px 40px -26px #C2517E;transition:transform .6s var(--ease)}
+.stat:hover{transform:translateY(-6px) rotate(-.6deg)}
+.stat:nth-child(2){background:var(--petal)}
+.stat b{display:block;font-family:var(--f-display);font-size:clamp(40px,5vw,62px);font-weight:500;color:var(--berry);line-height:1;font-variation-settings:"SOFT" 100;font-variant-numeric:tabular-nums}
+.stat span{display:block;margin-top:10px;font-weight:700;color:var(--mist);font-size:15px;line-height:1.4}
+
+/* channel cards */
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:28px}
+.filters button{border:2px solid var(--petal);background:var(--card);color:var(--plum);font:800 14px var(--f-body);padding:10px 18px;border-radius:99px;cursor:pointer;transition:all .45s var(--ease)}
+.filters button:hover{border-color:var(--rose)}
+.filters button[aria-pressed="true"]{background:var(--berry);border-color:var(--berry);color:#fff}
+.filters button:focus-visible{outline:3px solid var(--berry);outline-offset:2px}
+.chs{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.ch{background:var(--card);border-radius:30px;padding:22px;display:flex;flex-direction:column;gap:16px;box-shadow:0 20px 44px -32px #C2517E;transition:transform .7s var(--ease),box-shadow .7s var(--ease);min-width:0}
+.ch:hover{transform:translateY(-6px);box-shadow:0 30px 50px -30px #C2517E}
+.ch.out,.vid.out{display:none}
+.ch-top{display:flex;gap:14px;align-items:center}
+.av{width:58px;height:58px;flex:none;border-radius:50%;object-fit:cover;box-shadow:0 0 0 3px var(--card),0 0 0 5px var(--petal);background:var(--petal);display:grid;place-items:center;font-family:var(--f-display);font-size:24px;color:var(--berry)}
+.ch-top div{min-width:0}
+.ch h4{font-size:22px;line-height:1.15}
+.ch .hd{font-size:13px;font-weight:700;color:var(--mist);overflow-wrap:anywhere}
+.ch .note{margin:0;font-size:15px;color:var(--plum);line-height:1.45}
+.nums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;background:var(--blush);border-radius:18px;padding:12px 8px;text-align:center}
+.nums b{display:block;font-family:var(--f-display);font-size:22px;font-weight:600;color:var(--berry);font-variation-settings:"SOFT" 100;line-height:1.1;font-variant-numeric:tabular-nums}
+.nums small{font-size:11px;font-weight:800;color:var(--mist);letter-spacing:.06em;text-transform:uppercase}
+.tb{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tb a{position:relative;display:block;aspect-ratio:9/14;border-radius:14px;overflow:hidden;background:var(--petal)}
+.tb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 1s var(--ease)}
+.tb a:hover img{transform:scale(1.07)}
+.tb span{position:absolute;left:6px;bottom:6px;background:#4A2B3Acc;color:#fff;font-size:11px;font-weight:800;padding:2px 7px;border-radius:99px}
+.tb a.st{display:grid;place-content:center;text-align:center;background:linear-gradient(160deg,var(--petal),var(--rose))}
+.tb a.st b{font-family:var(--f-display);font-size:30px;color:#fff;font-weight:600;line-height:1}
+.tb a.st small{font-size:11px;font-weight:800;color:var(--plum)}
+.tb a:focus-visible{outline:3px solid var(--berry);outline-offset:2px}
+.ch .more{margin-top:auto;font-weight:800;font-size:14px;color:var(--berry);text-decoration:none;display:inline-flex;gap:6px;transition:gap .5s var(--ease)}
+.ch .more:hover{gap:12px}
+.ch .more.off{color:var(--mist)}
+
+/* video wall */
+.vids{display:grid;grid-template-columns:repeat(5,1fr);gap:16px}
+.vid{position:relative;display:block;aspect-ratio:9/15;border-radius:24px;overflow:hidden;text-decoration:none;color:#fff;background:var(--petal);box-shadow:0 18px 40px -26px #C2517E;transition:transform .7s var(--ease),box-shadow .7s var(--ease)}
+.vid img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+.vid::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#4A2B3A00 40%,#4A2B3Ae0 100%)}
+.vid:hover{transform:translateY(-8px) rotate(-.8deg);box-shadow:0 30px 50px -28px #C2517E}
+.vid:hover img{transform:scale(1.06)}
+.vid:focus-visible{outline:3px solid var(--berry);outline-offset:3px}
+.vid .cap{position:absolute;left:14px;right:14px;bottom:14px;z-index:1}
+.vid .cap b{display:block;font-family:var(--f-display);font-variation-settings:"SOFT" 100;font-size:30px;font-weight:500;line-height:1}
+.vid .cap p{margin:6px 0 0;font-size:13px;font-weight:700;line-height:1.3}
+.vid .cap small{display:block;margin-top:4px;font-size:11px;font-weight:800;opacity:.85;letter-spacing:.04em}
+.vid .play{position:absolute;z-index:1;top:12px;right:12px;width:36px;height:36px;border-radius:50%;background:#ffffffe0;display:grid;place-items:center;transition:transform .6s var(--ease)}
+.vid .play::after{content:"";border-left:10px solid var(--berry);border-top:7px solid transparent;border-bottom:7px solid transparent;margin-left:3px}
+.vid:hover .play{transform:scale(1.15) rotate(8deg)}
+
+/* fanpages */
+.pages{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.pg{background:var(--card);border-radius:30px;overflow:hidden;text-decoration:none;box-shadow:0 20px 44px -32px #C2517E;transition:transform .7s var(--ease)}
+.pg:hover{transform:translateY(-6px)}
+.pg:focus-visible{outline:3px solid var(--berry);outline-offset:3px}
+.pg .cv{aspect-ratio:2.6/1;overflow:hidden;background:linear-gradient(140deg,var(--rose),#FFC4D8)}
+.pg .cv img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 1.2s var(--ease)}
+.pg:hover .cv img{transform:scale(1.04)}
+.pg .cv{display:grid;place-items:center}
+.nocv{font-family:var(--f-display);font-style:italic;font-variation-settings:"SOFT" 100;font-size:clamp(22px,3vw,34px);color:#fff;padding:0 20px;text-align:center}
+.pg .bd{padding:18px 22px;display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.pg h4{font-size:22px}
+.pg .role{font-size:14px;font-weight:700;color:var(--mist)}
+.pg .kpi{display:flex;gap:16px}
+.pg .kpi b{display:block;font-family:var(--f-display);font-size:24px;color:var(--berry);font-weight:600;font-variation-settings:"SOFT" 100;line-height:1.1}
+.pg .kpi small{font-size:11px;font-weight:800;color:var(--mist);text-transform:uppercase;letter-spacing:.06em}
+.pg.wide{grid-column:span 2}
+.pg.wide .cv{aspect-ratio:4.4/1}
+
+/* GSM class */
+.gsm{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center;background:var(--card);border-radius:40px;padding:clamp(20px,3vw,36px);box-shadow:0 30px 60px -40px #C2517E}
+.gsm figure{margin:0;border-radius:26px;overflow:hidden}
+.gsm figure img{display:block;width:100%;height:auto}
+.gsm p{margin:12px 0 18px;color:var(--mist)}
+.mini{display:grid;gap:10px}
+.mini a{display:flex;align-items:center;gap:12px;background:var(--blush);border-radius:18px;padding:10px 14px;text-decoration:none;transition:transform .5s var(--ease),background .4s}
+.mini a:hover{transform:translateX(6px);background:var(--petal)}
+.mini .av{width:42px;height:42px;font-size:18px}
+.mini b{font-family:var(--f-display);font-size:22px;color:var(--berry);font-weight:600;font-variation-settings:"SOFT" 100;margin-left:auto}
+.mini span{font-weight:800;font-size:15px}
+.big{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.big div{background:var(--petal);border-radius:20px;padding:12px 18px}
+.big b{display:block;font-family:var(--f-display);font-size:32px;color:var(--berry);font-weight:600;font-variation-settings:"SOFT" 100;line-height:1}
+.big small{font-size:12px;font-weight:800;color:var(--mist)}
+
+/* behind the scenes */
+.bts{display:grid;grid-template-columns:.8fr 1.2fr;gap:44px;align-items:center}
+.phone{position:relative;justify-self:center;width:min(100%,300px);aspect-ratio:9/16;border-radius:40px;padding:10px;background:var(--plum);box-shadow:0 40px 70px -30px #4A2B3A99}
+.phone video,.phone img{width:100%;height:100%;object-fit:cover;border-radius:31px;display:block;background:#2a1820}
+.phone::before{content:"";position:absolute;top:18px;left:50%;transform:translateX(-50%);width:70px;height:18px;border-radius:99px;background:var(--plum);z-index:1}
+.snd{position:absolute;z-index:2;right:22px;bottom:22px;border:0;cursor:pointer;background:#ffffffe6;color:var(--berry);font:800 12px var(--f-body);padding:8px 14px;border-radius:99px}
+.snd:focus-visible{outline:3px solid var(--rose);outline-offset:2px}
+.bts .txt p{margin:0 0 14px;max-width:32em}
+.steps{display:grid;gap:12px;margin-top:20px}
+.steps div{display:flex;gap:14px;align-items:flex-start;background:var(--card);border-radius:20px;padding:14px 18px;transition:transform .5s var(--ease)}
+.steps div:hover{transform:translateX(6px)}
+.steps i{font-style:normal;font-family:var(--f-hand);font-size:28px;color:var(--berry);line-height:1;min-width:26px}
+.steps b{display:block}
+.steps span{font-size:15px;color:var(--mist)}
+.snaps{display:flex;gap:18px;margin-top:26px;padding-left:6px}
+.snaps figure{margin:0;flex:1;max-width:220px;background:var(--card);padding:8px 8px 26px;border-radius:14px;box-shadow:0 20px 36px -22px #C2517E;transition:transform .7s var(--ease)}
+.snaps figure:nth-child(1){transform:rotate(-4deg)}
+.snaps figure:nth-child(2){transform:rotate(3deg) translateY(14px)}
+.snaps figure:hover{transform:rotate(0) translateY(-6px) scale(1.03)}
+.snaps img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:8px}
+
+.contact{margin-block:96px 50px;border-radius:56px;background:linear-gradient(140deg,#FFC4D8,#F7A8C4);padding:clamp(28px,6vw,72px);display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:center;color:var(--plum);position:relative;overflow:hidden}
+.contact::after{content:"✿";position:absolute;right:-30px;top:-60px;font-size:260px;color:#ffffff40;animation:spin 40s linear infinite;pointer-events:none}
+.contact p{margin:16px 0 0;font-weight:700;max-width:26em}
+.rows{display:grid;gap:14px;min-width:0;position:relative;z-index:1}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;background:#ffffffd9;border-radius:24px;padding:16px 20px;flex-wrap:wrap;transition:transform .5s var(--ease)}
+.row:hover{transform:translateX(6px)}
+.row small{display:block;font-size:12px;letter-spacing:.16em;font-weight:800;color:var(--berry);text-transform:uppercase}
+.row span{font-weight:800;font-size:18px;overflow-wrap:anywhere;user-select:all}
+.copy{border:0;cursor:pointer;background:var(--rose);color:#fff;font:800 13px var(--f-body);padding:9px 18px;border-radius:99px;transition:background .4s}
+.copy:hover{background:var(--berry)}
+.copy:focus-visible{outline:3px solid var(--plum);outline-offset:2px}
+footer{text-align:center;color:var(--mist);font-size:14px;padding-bottom:40px}
+
+@media (max-width:1060px){.vids{grid-template-columns:repeat(4,1fr)}.chs{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:860px){
+  .hero,.contact,.gsm,.bts{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr}
+  .vids{grid-template-columns:repeat(3,1fr)}
+  .pages{grid-template-columns:1fr}.pg.wide{grid-column:auto}.pg.wide .cv{aspect-ratio:2.6/1}
+  .sticker.a{left:-6px}.sticker.b{right:-6px}
+  nav ul{display:none}
+}
+@media (max-width:600px){.chs{grid-template-columns:1fr}.vids{grid-template-columns:repeat(2,1fr)}.vid .cap b{font-size:24px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}.rv.wait{opacity:1;transform:none;filter:none}}
+</style>
+
+<div class="blobs" aria-hidden="true"><i></i><i></i><i></i></div>
+<div id="bar" aria-hidden="true"></div>
+
+<div class="wrap">
+  <nav class="in">
+    <div class="logo">Thu Thảo</div>
+    <ul>
+      <li><a href="#kenh">Kênh</a></li>
+      <li><a href="#video">Video</a></li>
+      <li><a href="#fanpage">Fanpage</a></li>
+      <li><a href="#hau-truong">Quy trình</a></li>
+      <li><a href="#lien-he">Liên hệ</a></li>
+    </ul>
+  </nav>
+
+  <header class="hero" id="top">
+    <div>
+      <div class="eyebrow in" style="--d:1">TikTok Content Creator · Hà Nội</div>
+      <h1 class="in" style="--d:2">Lưu Thị <em>Thu Thảo</em></h1>
+      <p class="lead in" style="--d:3">Content Creator chuyên TikTok và Facebook, tập trung vào kịch bản, xây dựng kênh và tăng trưởng chuyển đổi. Từ năm 2025 đến nay, Thảo phụ trách nội dung cho hơn 14 kênh TikTok và fanpage trong các lĩnh vực nha khoa, F&amp;B, xe điện, lounge và lifestyle.</p>
+      <div class="kpi-h in" style="--d:4"><div><b>15+</b><span>video trên 1 triệu view</span></div><div><b>16.7M</b><span>view video cao nhất</span></div><div><b>14+</b><span>kênh và fanpage</span></div></div>
+      <div class="btns in" style="--d:4">
+        <a class="btn main" href="#video">Xem video nổi bật</a>
+        <a class="btn ghost" href="#lien-he">Liên hệ hợp tác</a>
+      </div>
+    </div>
+    <div class="portrait in" style="--d:3">
+      <div class="arch"><video id="heroV" src="media/v_hero.mp4" poster="media/p_hero.jpg" muted loop playsinline autoplay preload="metadata" aria-label="Thảo ôm bó hoa hồng"></video></div>
+    </div>
+  </header>
+
+  <div class="band in" style="--d:5" aria-hidden="true"><div id="mq"></div></div>
+
+  <section id="so-lieu">
+    <div class="head rv">
+      <h2 class="hand">Vài con số nổi bật</h2>
+    </div>
+    <div class="stats">
+      <div class="stat rv" style="--d:0"><b data-n="16.7" data-s="M">16.7M</b><span>view cho video răng sữa trên kênh Raya</span></div>
+      <div class="stat rv" style="--d:1"><b data-n="4.1" data-s="M">4.1M</b><span>view cho video cao nhất của Green SM</span></div>
+      <div class="stat rv" style="--d:2"><b data-n="5.4" data-s="M+">5.4M+</b><span>lượt xem trên fanpage Xính Lounge</span></div>
+      <div class="stat rv" style="--d:3"><b data-n="70" data-s="" data-p="~">~70</b><span>video mỗi tháng cho hệ kênh Nha khoa Raya</span></div>
+    </div>
+  </section>
+
+  <section id="kenh">
+    <div class="head rv">
+      <h2 class="hand">Các kênh TikTok Thảo đã thực hiện</h2>
+      <p>Số liệu cập nhật trên TikTok ngày 30/10/2026. Nhấn vào ảnh để xem video.</p>
+    </div>
+    <div class="filters rv" role="group" aria-label="Lọc kênh và video">
+      <button type="button" data-f="all" aria-pressed="true">Tất cả</button>
+      <button type="button" data-f="nk" aria-pressed="false">Nha khoa</button>
+      <button type="button" data-f="xe" aria-pressed="false">Xe điện</button>
+      <button type="button" data-f="fb" aria-pressed="false">Ăn uống</button>
+      <button type="button" data-f="ls" aria-pressed="false">Lifestyle</button>
+    </div>
+    <div class="chs" id="chs"></div>
+  </section>
+
+  <section id="video">
+    <div class="head rv">
+      <h2 class="hand">Video nổi bật</h2>
+      <p>Nhấn vào thẻ để xem video trên TikTok. Có thể lọc theo lĩnh vực ở phần trên.</p>
+    </div>
+    <div class="vids" id="vids"></div>
+  </section>
+
+  <section id="dao-tao">
+    <div class="gsm rv">
+      <figure><img src="media/gsm_class.jpg" alt="Lớp đào tạo TikTok cho tư vấn bán hàng GSM"></figure>
+      <div>
+        <h3 class="hand">Đào tạo xây TikTok cá nhân cho TVBH Green SM</h3>
+        <div class="when-s">Dự án đào tạo · 3/2026 – 5/2026</div>
+        <p>Hỗ trợ đội ngũ TVBH xây dựng và phát triển kênh TikTok cá nhân, tự quay, tự đăng, tự có khách từ kênh của mình.</p>
+        <div class="big"><div><b>10/40</b><small>kênh vượt mốc 2K follower</small></div><div><b>184K</b><small>view video cao nhất của học viên</small></div></div>
+        <div class="mini" id="mini"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="fanpage">
+    <div class="head rv">
+      <h2 class="hand">Fanpage Thảo phụ trách</h2>
+      <p>Phụ trách caption, brief design và video cho lounge, quán bar và nhân hiệu bác sĩ.</p>
+    </div>
+    <div class="pages" id="pages"></div>
+  </section>
+
+  <section id="hau-truong">
+    <div class="bts">
+      <div class="phone rv">
+        <video id="btsV" src="media/v_bts.mp4" poster="media/p_bts.jpg" muted loop playsinline preload="none" aria-label="Thảo dưới trời xanh"></video>
+        <button class="snd" type="button" id="snd">Bật tiếng</button>
+      </div>
+      <div class="txt rv" style="--d:1">
+        <div class="head" style="margin-bottom:20px"><h2 class="hand">Quy trình làm việc</h2></div>
+        <p>Mỗi dự án bắt đầu từ việc quan sát thực tế: sản phẩm, khách hàng và cách thương hiệu muốn được nhìn nhận.</p>
+        <div class="steps">
+          <div><i>1</i><p style="margin:0"><b>Nghiên cứu</b><span>Tìm hiểu sản phẩm, chân dung khách hàng và nhân vật đại diện của kênh.</span></p></div>
+          <div><i>2</i><p style="margin:0"><b>Kịch bản và brief</b><span>Xây dựng kịch bản, caption, brief design và video rõ ràng cho đội ngũ sản xuất.</span></p></div>
+          <div><i>3</i><p style="margin:0"><b>Đo lường và tối ưu</b><span>Theo dõi số liệu từng video, nhân rộng định dạng hiệu quả và điều chỉnh nội dung chưa đạt.</span></p></div>
+        </div>
+        <div class="snaps"><figure class="rv" style="--d:2"><img src="media/snap_1.jpg" alt="Thảo đội vương miện giấy ở quán đồ ăn nhanh"></figure><figure class="rv" style="--d:3"><img src="media/snap_2.jpg" alt="Thảo trên phố về đêm"></figure></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="contact rv" id="lien-he">
+    <div>
+      <h2 class="hand" style="color:var(--plum)">Liên hệ hợp tác</h2>
+      <p>Vui lòng liên hệ qua Zalo hoặc email, Thảo sẽ phản hồi trong thời gian sớm nhất.</p>
+    </div>
+    <div class="rows">
+      <div class="row"><div><small>Điện thoại / Zalo</small><span>0387719698</span></div><button class="copy" type="button" data-v="0387719698">Sao chép</button></div>
+      <div class="row"><div><small>Email</small><span>Thaothuu0412@gmail.com</span></div><button class="copy" type="button" data-v="Thaothuu0412@gmail.com">Sao chép</button></div>
+    </div>
+  </div>
+  <footer>Lưu Thị Thu Thảo · TikTok Content Creator · 2025 – 2026</footer>
+</div>
+
+<script>
+var TT='https://www.tiktok.com/';
+/* channels: [handle, name, cat, avatar, followers, likes, top views, note, [video ids], since] */
+var C=[
+ ['raya67941','Raya','nk','raya67941','44.8K','362.6K','16.7M','Sử dụng AI (Veo 3) tạo video mô phỏng quá trình điều trị và kiến thức răng miệng. Khoảng 70 video mỗi tháng.',['7686799895923232020','7680037508259892501','7694581462435204372'],'Từ 4/2026'],
+ ['greensm.platform','Green SM Platform','xe','greensm.platform','30.6K','219.5K','4.1M','Truyền thông chính sách thuê xe và thu nhập cho tài xế, kết hợp quảng cáo. Data chuyển đổi tăng gấp 3 sau 3 tháng vận hành.',['7639571164628520200','7627882629106322709','7631131116291886357'],'11/2025 – 5/2026'],
+ ['banhmi.bongngbang75','Bánh mì Bống Bang','fb','banhmi.bongngbang75','18.6K','442.1K','3.3M','Tiểu phẩm hài, bắt trend tại điểm bán. Đạt hơn 8K follower chỉ sau tháng đầu tiên, tỷ lệ viral 60%.',['7522144791577169170','7543657516396301575','7549588053350681874'],'Từ 4/2025'],
+ ['kimngan.9life','Kim Ngân 9Life','ls','kimngan.9life','64.1K','1.2M','1.4M','Xây dựng nhân hiệu chủ chuỗi F&amp;B (Analog, BôngCha, Bống Bang) qua vlog đời sống và hậu trường kinh doanh. 45 video viral.',['7549048047095811348','7631806158692551937','7665229785630510353'],'Từ 3/2025'],
+ ['bongcha75','BôngCha','fb','bongcha75','50.6K','297.7K','928.6K','Tiểu phẩm tại quán, giới thiệu menu và chương trình ưu đãi. Đạt 1.000 follower trong 2 tuần đầu.',['7696891884794350868','7671259029460536583','7553636591579696402'],'Từ 8/2025'],
+ [null,'Analog Lounge','fb','analog','9.3K','135.9K','4M','Video không khí, sự kiện và biểu diễn về đêm. 72 video viral sau 10.5 tháng.',['local:analog_t1','local:analog_t2','stat:72:video viral'],'Từ 2/2025'],
+ ['nha.khoa.raya7','Nha khoa Raya','nk','nha.khoa.raya7','1.3K','18.1K','507K','Tiểu phẩm tại phòng khám và hướng dẫn chăm sóc răng miệng cho trẻ em, người lớn.',['7691275238281186578','7678316220252458261','7687462366572727572'],'2026'],
+ ['ths.hng.chuyn.imp','ThS.BS Hưng · Implant','nk','ths.hng.chuyn.imp','568','4K','416K','Xây dựng nhân hiệu bác sĩ: quy trình cấy ghép implant, giải đáp ca khó và kiến thức mất răng.',['7691585313822543112','7688626498785529108','7688924646586060084'],'2026'],
+ ['tran.thuy1979','Trần Thuỷ U50','ls','tran.thuy1979','3.8K','42.7K','317K','Kênh lifestyle U50: hành trình tập luyện, dinh dưỡng và thay đổi vóc dáng.',['7687960527787937031','7699839950849887509','7696498414170705172'],'Từ 8/2026'],
+ ['bs.hung.rangsuthammy','BS Hưng · Răng sứ','nk','bs.hung.rangsuthammy','177','922','36.3K','Tư vấn răng sứ, veneer và xử lý sứ hỏng; kêu gọi tương tác để tạo lead.',['7686427940912925959','7678191574903278868','7686061772427693320'],'2026'],
+ ['kaffir.xin.chao','KaffirThai Xin Chào','fb','kaffir.xin.chao','235','7.4K','176K','Kênh nhà hàng Thái tại Thanh Hoá: giới thiệu món, không gian và ưu đãi. Video cao nhất 176K view.',['7630837287219170580','7633801522563812628','7634164972079025428'],'Mới mở']
+];
+var V=[
+ ['raya67941','7686799895923232020','16.7M','Răng sữa mọc lên như thế nào?','Raya','nk'],
+ ['greensm.platform','7639571164628520200','4.1M','Chỉ từ 15 triệu, làm chủ thu nhập cùng Green SM','Green SM','xe'],
+ ['banhmi.bongngbang75','7522144791577169170','3.3M','Tiểu phẩm hài tại xe bánh mì','Bống Bang','fb'],
+ ['banhmi.bongngbang75','7543657516396301575','2.9M','Bắt trend âm thanh viral','Bống Bang','fb'],
+ ['raya67941','7680037508259892501','2.4M','Phục hồi răng vỡ bằng composite','Raya','nk'],
+ ['greensm.platform','7627882629106322709','2.3M','Ra mắt thuê vận hành Minio Green','Green SM','xe'],
+ ['greensm.platform','7631131116291886357','2.1M','Herio Green từ 389K/ngày','Green SM','xe'],
+ ['banhmi.bongngbang75','7549588053350681874','1.7M','Review bánh mì cùng khách hàng','Bống Bang','fb'],
+ ['kimngan.9life','7549048047095811348','1.4M','Hỏi đáp phong cách cùng người theo dõi','Kim Ngân 9Life','ls'],
+ ['banhmi.bongngbang75','7508770821519805704','1.4M','Giới thiệu combo bánh mì 35K','Bống Bang','fb'],
+ ['bongcha75','7696891884794350868','928.6K','Phản hồi của khách hàng tại quán','BôngCha','fb'],
+ ['raya67941','7694581462435204372','794.3K','Cấy implant nhờ máng định vị 3D','Raya','nk'],
+ ['bongcha75','7671259029460536583','710K','Khai trương cơ sở 2 tại Xã Đàn','BôngCha','fb'],
+ ['nha.khoa.raya7','7691275238281186578','507K','Dạy bé đánh răng đúng cách','Nha khoa Raya','nk'],
+ ['bongcha75','7553636591579696402','483.1K','Tiểu phẩm hài tại quán','BôngCha','fb'],
+ ['kimngan.9life','7631806158692551937','462.8K','Hậu trường kiểm tra chi nhánh BôngCha','Kim Ngân 9Life','ls'],
+ ['ths.hng.chuyn.imp','7691585313822543112','416.4K','Trồng implant toàn hàm All-on-4','BS Hưng','nk'],
+ ['tran.thuy1979','7687960527787937031','317K','Video biến hình U50','Trần Thuỷ U50','ls'],
+ ['hoangvan.greensm','7637433771347725588','184.4K','Cập nhật chính sách cho tài xế','Cô nàng Green SM','xe'],
+ ['tran.thuy1979','7699839950849887509','181.9K','Thực đơn bữa sáng U50','Trần Thuỷ U50','ls']
+];
+var VIEWS={};V.forEach(function(v){VIEWS[v[1]]=v[2]});var EXTRA={'7686427940912925959':'36.3K','7665229785630510353':'299.6K','7678316220252458261':'112.6K','7687462366572727572':'40.5K','7688626498785529108':'73.1K','7688924646586060084':'44.3K','7696498414170705172':'165.7K','7678191574903278868':'34.4K','7686061772427693320':'11.8K','7630837287219170580':'176K','7633801522563812628':'138.7K','7634164972079025428':'14.9K'};for(var x in EXTRA)VIEWS[x]=EXTRA[x];
+var M=[['hoangvan.greensm','Cô nàng Green SM','4.2K'],['huenguyen2811','Huệ Ham Học Hỏi','2.8K'],['minhthanggreensmplatform','GreenSM Platform Minh Thắng','3.9K']];
+var PG=[
+ ['https://www.facebook.com/XinhLounge68','cover_xinh','Xính Lounge','Caption, brief design & video',[['44K','theo dõi'],['5.4M+','lượt xem']],1],
+ ['https://www.facebook.com/75LyThuongKiet.Analog','cover_analog','Analog Lounge','Caption · 2025 – 4/2026',[['138K','theo dõi']]],
+ ['https://www.facebook.com/bsdinhhungimplant01','cover_hung_implant','ThS.BS Hưng · Implant','Nội dung before/after, hành trình khách hàng, video ads',[['~300tr','doanh thu/tháng']]],
+ ['https://www.facebook.com/bsdinhhungrangsu01','cover_hung_rangsu','BS Đình Hưng · Răng sứ','Định vị chuyên gia răng sứ',[['20 năm','kinh nghiệm']]],
+ ['https://www.facebook.com/profile.php?id=61559146333118','cover_hung_tm','BS Đình Hưng · Răng sứ thẩm mỹ','Page chuyển đổi, chuyên khoa răng hàm mặt',[]],
+ ['https://www.facebook.com/profile.php?id=100090422174257',null,'Hero Lounge','Quản lý nội dung fanpage',[],1]
+];
+
+function av(h,name,cls){return h?'<img class="av'+(cls||'')+'" src="media/av/'+h+'.jpg" alt="">':'<span class="av'+(cls||'')+'" aria-hidden="true">'+name.charAt(0)+'</span>'}
+function th(id){return 'media/thumbs/'+id+'.jpg'}
+
+document.getElementById('chs').innerHTML=C.map(function(c,i){
+  var url=c[0]?TT+'@'+c[0]:null;
+  var tbs=c[8].length?'<div class="tb">'+c[8].map(function(id){if(id.indexOf('stat:')===0){var z=id.split(':');return '<a class="st" aria-hidden="true" tabindex="-1"><b>'+z[1]+'</b><small>'+z[2]+'</small></a>'}
+    if(id.indexOf('local:')===0){var q=id.split(':');return '<a aria-hidden="true" tabindex="-1"><img src="media/'+q[1]+'.jpg" alt=""></a>'}
+    return '<a href="'+TT+'@'+c[0]+'/video/'+id+'" target="_blank" rel="noopener" aria-label="Xem video '+(VIEWS[id]||'')+' view"><img src="'+th(id)+'" alt=""><span>'+(VIEWS[id]||'')+'</span></a>'}).join('')+'</div>':'';
+  return '<article class="ch rv" data-c="'+c[2]+'" style="--d:'+(i%3)+'"><div class="ch-top">'+av(c[3],c[1])+'<div><h4>'+c[1]+'</h4><div class="hd">'+(c[0]?'@'+c[0]:'TikTok')+' · '+c[9]+'</div></div></div>'+
+    '<div class="nums"><div><b>'+c[4]+'</b><small>follower</small></div><div><b>'+c[5]+'</b><small>lượt thích</small></div><div><b>'+(c[6]||'–')+'</b><small>view cao nhất</small></div></div>'+
+    '<p class="note">'+c[7]+'</p>'+tbs+
+    (url?'<a class="more" href="'+url+'" target="_blank" rel="noopener">Xem kênh ↗</a>':'<span class="more off">Số liệu theo báo cáo kênh</span>')+'</article>';
+}).join('');
+
+document.getElementById('vids').innerHTML=V.map(function(v,i){
+  return '<a class="vid rv" style="--d:'+(i%5)+'" data-c="'+v[5]+'" href="'+TT+'@'+v[0]+'/video/'+v[1]+'" target="_blank" rel="noopener"><img src="'+th(v[1])+'" alt=""><span class="play" aria-hidden="true"></span><div class="cap"><b>'+v[2]+'</b><p>'+v[3]+'</p><small>'+v[4]+'</small></div></a>';
+}).join('');
+
+document.getElementById('mini').innerHTML=M.map(function(m){
+  return '<a href="'+TT+'@'+m[0]+'" target="_blank" rel="noopener">'+av(m[0],m[1])+'<span>'+m[1]+'</span><b>'+m[2]+'</b></a>';
+}).join('');
+
+document.getElementById('pages').innerHTML=PG.map(function(p,i){
+  return '<a class="pg rv'+(p[5]?' wide':'')+'" style="--d:'+(i%2)+'" href="'+p[0]+'" target="_blank" rel="noopener">'+(p[1]?'<div class="cv"><img src="media/'+p[1]+'.jpg" alt=""></div>':'')+''+
+    '<div class="bd"><div><h4>'+p[2]+'</h4><div class="role">'+p[3]+'</div></div><div class="kpi">'+p[4].map(function(k){return '<div><b>'+k[0]+'</b><small>'+k[1]+'</small></div>'}).join('')+'</div></div></a>';
+}).join('');
+
+var words=['Raya','Green SM','Kim Ngân 9Life','Bánh mì Bống Bang','BôngCha','Analog Lounge','Xính Lounge','Trần Thuỷ U50','KaffirThai','BS Hưng','Hero Lounge'],m='';
+for(var k=0;k<2;k++)words.forEach(function(w){m+='<span>'+w+'</span><span>✿</span>'});
+document.getElementById('mq').innerHTML=m+m;
+
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+var rv=[].slice.call(document.querySelectorAll('.rv'));
+if('IntersectionObserver' in window&&!reduce){
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.remove('wait');io.unobserve(e.target);count(e.target)}})},{rootMargin:'0px 0px -8% 0px'});
+  rv.forEach(function(el){if(el.getBoundingClientRect().top>innerHeight*.92){el.classList.add('wait');io.observe(el)}else count(el)});
+}
+function count(el){
+  var b=el.querySelector&&el.querySelector('b[data-n]');if(!b||reduce||b.dataset.done)return;b.dataset.done=1;
+  var n=parseFloat(b.dataset.n),s=b.dataset.s||'',p=b.dataset.p||'',dec=(b.dataset.n.split('.')[1]||'').length,t0=performance.now();
+  (function f(t){var k=Math.min(1,(t-t0)/1900),e=1-Math.pow(1-k,4);b.textContent=p+(n*e).toFixed(dec)+s;if(k<1)requestAnimationFrame(f)})(t0);
+}
+
+/* videos play only while visible */
+var heroV=document.getElementById('heroV'),btsV=document.getElementById('btsV');
+if(reduce){heroV.removeAttribute('autoplay');heroV.pause()}
+if('IntersectionObserver' in window){
+  var vo=new IntersectionObserver(function(es){es.forEach(function(e){var v=e.target;if(e.isIntersecting&&!reduce){var p=v.play();p&&p.catch(function(){})}else v.pause()})},{threshold:.35});
+  vo.observe(heroV);vo.observe(btsV);
+}
+document.getElementById('snd').addEventListener('click',function(){btsV.muted=!btsV.muted;this.textContent=btsV.muted?'Bật tiếng':'Tắt tiếng';var p=btsV.play();p&&p.catch(function(){})});
+
+var bar=document.getElementById('bar'),navs=[].slice.call(document.querySelectorAll('nav a'));
+function onScroll(){
+  var h=document.documentElement,max=h.scrollHeight-innerHeight;bar.style.transform='scaleX('+(max>0?scrollY/max:0)+')';
+  var cur='';navs.forEach(function(a){var s=document.querySelector(a.getAttribute('href'));if(s&&s.getBoundingClientRect().top<innerHeight*.4)cur=a});
+  navs.forEach(function(a){a.classList.toggle('on',a===cur)});
+}
+addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+/* one filter drives both channel cards and the video wall */
+var fb=[].slice.call(document.querySelectorAll('.filters button'));
+fb.forEach(function(b){b.addEventListener('click',function(){
+  fb.forEach(function(x){x.setAttribute('aria-pressed',x===b)});
+  var f=b.dataset.f,i=0;
+  [].forEach.call(document.querySelectorAll('.ch,.vid'),function(v){
+    var show=f==='all'||v.dataset.c===f;v.classList.toggle('out',!show);
+    if(show&&!reduce){v.classList.remove('wait');v.animate([{opacity:0,transform:'translateY(18px) scale(.98)'},{opacity:1,transform:'none'}],{duration:700,delay:(i++%10)*55,easing:'cubic-bezier(.22,1,.36,1)',fill:'backwards'})}
+  });
+})});
+
+document.addEventListener('click',function(e){
+  var c=e.target.closest('.copy');
+  if(c){var v=c.dataset.v,done=function(){c.textContent='Đã sao chép';setTimeout(function(){c.textContent='Sao chép'},1600)};
+    try{navigator.clipboard.writeText(v).then(done,function(){sel(c)})}catch(x){sel(c)}}
+});
+function sel(c){var n=c.parentNode.querySelector('span'),r=document.createRange();r.selectNodeContents(n);var s=getSelection();s.removeAllRanges();s.addRange(r)}
+</script>
